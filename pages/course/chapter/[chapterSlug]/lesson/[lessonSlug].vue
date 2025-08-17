@@ -21,6 +21,7 @@
         Download Video
       </a>
     </div>
+    <VideoPlayer v-if="lesson?.videoId" :videoId="String(lesson?.videoId)"/>
     <p>{{ lesson?.text }}</p>
   </div>
 
