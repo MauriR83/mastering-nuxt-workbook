@@ -33,6 +33,11 @@ const lesson = computed(() => {
   return chapter.value?.lessons.find((lesson) => lesson.slug === route.params.lessonSlug)
 })
 
-console.log(chapter, 'hcpater')
+const title = computed(() => {
+  return `${lesson.value?.title} - ${course.title}`;
+});
+useHead({
+  title,
+})
 
 </script>
