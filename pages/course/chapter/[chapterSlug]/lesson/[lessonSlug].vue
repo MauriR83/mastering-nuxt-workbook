@@ -1,43 +1,76 @@
 <template>
-
   <div>
     <p class="mt-0 uppercase font-bold text-slate-400 mb-1">
-      Lesson {{ chapter?.number }} - {{ lesson?.number }}
+      Lesson {{ chapter.number }} – {{ lesson.number }}
     </p>
-    <h2 class="my-0">{{ lesson?.title }}</h2>
+    <h2 class="my-0">{{ lesson.title }}</h2>
     <div class="flex space-x-4 mt-2 mb-8">
-      <NuxtLink v-if="lesson?.sourceUrl" class="font-normal text-md text-gray-500" :to="lesson.sourceUrl">
+      <NuxtLink
+        v-if="lesson.sourceUrl"
+        class="font-normal text-md text-gray-500"
+        :to="lesson.sourceUrl"
+      >
         Download Source Code
       </NuxtLink>
-      <NuxtLink v-if="lesson?.downloadUrl" class="font-normal text-md text-gray-500" :to="lesson.downloadUrl">
+      <NuxtLink
+        v-if="lesson.downloadUrl"
+        class="font-normal text-md text-gray-500"
+        :to="lesson.downloadUrl"
+      >
         Download Video
       </NuxtLink>
     </div>
-    <VideoPlayer v-if="lesson?.videoId" :videoId="String(lesson?.videoId)" />
-    <p>{{ lesson?.text }}</p>
-  </div>
+    <VideoPlayer
+      v-if="lesson.videoId"
+      :videoId="String(lesson.videoId)"
+    />
+    <p>{{ lesson.text }}</p>
 
+    <LessonCompleteButton
+      :model-value="isLessonComplete"
+      @update:model-value="toggleComplete"
+    />
+  </div>
 </template>
 
-
 <script setup lang="ts">
-
 const course = useCourse()
 const route = useRoute()
 
 const chapter = computed(() => {
-  return course.chapters.find((chapter) => chapter.slug === route.params.chapterSlug)
+  return (
+    course.chapters.find((c) => c.slug === route.params.chapterSlug) ||
+    { number: 1, lessons: [] }
+  )
 })
 
 const lesson = computed(() => {
-  return chapter.value?.lessons.find((lesson) => lesson.slug === route.params.lessonSlug)
+  return (
+    chapter.value.lessons.find((l) => l.slug === route.params.lessonSlug) ||
+    { number: 1, title: '', sourceUrl: '', downloadUrl: '', videoId: '', text: '' }
+  )
 })
 
-const title = computed(() => {
-  return `${lesson.value?.title} - ${course.title}`;
-});
-useHead({
-  title,
+const title = computed(() => `${lesson.value.title} - ${course.title}`)
+useHead({ title })
+
+const progress = useState<boolean[][]>('progress', () => [])
+
+const isLessonComplete = computed(() => {
+  const chapIdx = (chapter.value.number ?? 1) - 1
+  const lesIdx = (lesson.value.number ?? 1) - 1
+
+  if (chapIdx < 0 || lesIdx < 0) return false
+
+  return progress.value[chapIdx]?.[lesIdx] ?? false
 })
 
+const toggleComplete = () => {
+  const chapIdx = (chapter.value.number ?? 1) - 1
+  const lesIdx = (lesson.value.number ?? 1) - 1
+
+  if (!progress.value[chapIdx]) progress.value[chapIdx] = []
+
+  progress.value[chapIdx][lesIdx] = !isLessonComplete.value
+}
 </script>
