@@ -5,35 +5,22 @@
     </p>
     <h2 class="my-0">{{ lesson.title }}</h2>
     <div class="flex space-x-4 mt-2 mb-8">
-      <NuxtLink
-        v-if="lesson.sourceUrl"
-        class="font-normal text-md text-gray-500"
-        :to="lesson.sourceUrl"
-      >
+      <NuxtLink v-if="lesson.sourceUrl" class="font-normal text-md text-gray-500" :to="lesson.sourceUrl">
         Download Source Code
       </NuxtLink>
-      <NuxtLink
-        v-if="lesson.downloadUrl"
-        class="font-normal text-md text-gray-500"
-        :to="lesson.downloadUrl"
-      >
+      <NuxtLink v-if="lesson.downloadUrl" class="font-normal text-md text-gray-500" :to="lesson.downloadUrl">
         Download Video
       </NuxtLink>
     </div>
-    <VideoPlayer
-      v-if="lesson.videoId"
-      :videoId="String(lesson.videoId)"
-    />
+    <VideoPlayer v-if="lesson.videoId" :videoId="String(lesson.videoId)" />
     <p>{{ lesson.text }}</p>
-
-    <LessonCompleteButton
-      :model-value="isLessonComplete"
-      @update:model-value="toggleComplete"
-    />
+      <LessonCompleteButton :model-value="isLessonComplete" @update:model-value="toggleComplete" />
   </div>
 </template>
 
 <script setup lang="ts">
+import { ClientOnly } from '#components'
+
 const course = useCourse()
 const route = useRoute()
 
@@ -54,7 +41,7 @@ const lesson = computed(() => {
 const title = computed(() => `${lesson.value.title} - ${course.title}`)
 useHead({ title })
 
-const progress = useState<boolean[][]>('progress', () => [])
+const progress = useLocalStorage<boolean[][]>('progress', [])
 
 const isLessonComplete = computed(() => {
   const chapIdx = (chapter.value.number ?? 1) - 1
