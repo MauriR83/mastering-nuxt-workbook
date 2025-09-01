@@ -14,12 +14,13 @@
     </div>
     <VideoPlayer v-if="lesson.videoId" :videoId="String(lesson.videoId)" />
     <p>{{ lesson.text }}</p>
-      <LessonCompleteButton :model-value="isLessonComplete" @update:model-value="toggleComplete" />
+      <LessonCompleteButton :model-value="isLessonComplete" @update:model-value="handleUpdate" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ClientOnly } from '#components'
+import { createError } from 'h3'
+
 
 const course = useCourse()
 const route = useRoute()
@@ -51,6 +52,10 @@ const isLessonComplete = computed(() => {
 
   return progress.value[chapIdx]?.[lesIdx] ?? false
 })
+
+const handleUpdate = () => {
+  throw createError({ statusCode: 500, statusMessage: 'Could not update' })
+}
 
 const toggleComplete = () => {
   const chapIdx = (chapter.value.number ?? 1) - 1
