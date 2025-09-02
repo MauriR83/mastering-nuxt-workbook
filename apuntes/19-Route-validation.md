@@ -14,29 +14,29 @@ definePageMeta({
 
     const chapter = course.chapters.find(
       (chapter) => chapter.slug === params.chapterSlug
-    );
+    )
 
     if (!chapter) {
       return createError({
         statusCode: 404,
         message: 'Chapter not found',
-      });
+      })
     }
 
     const lesson = chapter.lessons.find(
       (lesson) => lesson.slug === params.lessonSlug
-    );
+    )
 
     if (!lesson) {
       return createError({
         statusCode: 404,
         message: 'Lesson not found',
-      });
+      })
     }
 
     return true;
   },
-});
+})
 ```
 
 Este validate hay que verlo como algo así como un middleware => Ejecuta un route middleware antes de que la página sea ejecutada para ver si se puede. Si se añade la función validate, no se podrá usar ningún otro middleware en esta página (de momento no nos afecta, pero hay que tenerlo presente). 
