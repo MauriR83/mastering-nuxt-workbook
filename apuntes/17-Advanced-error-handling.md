@@ -15,4 +15,9 @@ Ahora una cosa interesante, dónde vamos a querer poner estos error boundaries?
 Para empezar, no deberíamos envolver cada componente de la app con el errorBoundary, eso sería totalmente exagerado. Lo que hace es envolver child routes*. 
 Si tuviésemos un dashboard para admins con muchos widgets (p.ej. google analytics), también puede que quisiéramos envolver cada uno de los widgets individuales con el boundary. 
 
+
+POr cierto, puesto que nosotros ya no tenemos el resetError, porque usamos el clearError ,podemos hacer esto:
+` <button @click="clearError({ redirect: '/course/chapter/1-chapter-1/lesson/1-introduction-to-typescript-with-vue-js-3' })">`
+Es decir, poner el redirect dentro del clear error.
+
 * “Envolver child routes” significa poner un <NuxtErrorBoundary> alrededor de <NuxtPage /> dentro de un layout o página padre. Así, si un componente de la ruta hija falla, se maneja localmente y no rompe todo.
